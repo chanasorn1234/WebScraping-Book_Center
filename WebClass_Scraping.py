@@ -50,7 +50,6 @@ class Ebay:
         self.find_word = self.soup.find_all('span',{'class','u-dspn'})
         self.price = self.soup.find_all('div',{'class':'mainPrice'})[0]
         
-    
     def getData(self):
         # print(find_word[0].get_text(strip=True))
         self.register = b4(self.price.text,'html.parser')   
@@ -61,7 +60,29 @@ class Ebay:
         return self.find_word[0].get_text(strip=True),self.real_price
 
 
+class Weloveshop:
+    def __init__(self,url):
+        self.url = url
+        self.web_data = None
+        self.soup = None
+        self.find_word = None
+        self.price = None
+        self.requests()
 
+    def requests(self):
+        self.web_data = requests.get(self.url)
+        self.pull()
+    
+    def pull(self):
+        self.soup = b4(self.web_data.text,'html.parser')
+        self.findtag()
+
+    def findtag(self):
+        self.find_word = self.soup.find('h1')
+        self.price = self.soup.find_all('strong',{'class':'font-34px color-main'})
+    
+    def getData(self):
+        return self.find_word.get_text(strip=True),self.price[0].get_text(strip=True)+' บาท'
 
 '''gt730 2GB'''
 url = "https://www.lazada.co.th/products/gt730-2gb-i3301291452-s12230721553.html?spm=a2o4m.searchlist.list.3.127aef4ewYv5U6&search=1"
@@ -74,7 +95,8 @@ url4 = "https://www.ebay.com/itm/265287549827?epid=11051301031&_trkparms=ispr%3D
 url5 = "https://www.ebay.com/itm/185281932182?_trkparms=amclksrc%3DITM%26aid%3D1110006%26algo%3DHOMESPLICE.SIM%26ao%3D1%26asc%3D20200818143230%26meid%3D876a398ee27a4e7a9750711107d33074%26pid%3D101224%26rk%3D3%26rkt%3D5%26sd%3D265287549827%26itm%3D185281932182%26pmt%3D0%26noa%3D1%26pg%3D2047675%26algv%3DDefaultOrganicWeb%26brand%3DASUS&_trksid=p2047675.c101224.m-1"
 url6 = "https://www.ebay.com/itm/294018679165?_trkparms=pageci%3Aad6bee17-8e67-11ec-80fd-f6af9a1ce477%7Cparentrq%3Afdaf8fd217e0a744852fc889fffa2cba%7Ciid%3A1"
 
-l = Ebay(url4)
+url7 = "https://portal.weloveshopping.com/product/L90702790"
+l = Weloveshop(url7)
 print(l.getData())
 
 
