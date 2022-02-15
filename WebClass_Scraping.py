@@ -1,13 +1,16 @@
-from bs4 import BeautifulSoup as b4
+from bs4 import BeautifulSoup as b4 , SoupStrainer as s4
 import requests
+import io
 
 class Lazada:
     def __init__(self,url):
         self.url = url
         self.web_data = None
         self.soup = None
+        self.soup2 = None
         self.find_word = None
         self.price = None
+        self.img = None
         self.requests()
 
     def requests(self):
@@ -16,14 +19,16 @@ class Lazada:
     
     def pull(self):
         self.soup = b4(self.web_data.text,'html.parser')
+        self.soup2 = b4(self.web_data.text,'lxml',parse_only=s4('img'))
         self.findtag()
 
     def findtag(self):
         self.find_word = self.soup.find_all('h1',{'class','pdp-mod-product-badge-title'})
         self.price = self.soup.find_all('span',{'class':'pdp-price pdp-price_type_normal pdp-price_color_orange pdp-price_size_xl'})
-    
+        self.img = self.soup2.find_all('img',{'class':'pdp-mod-common-image gallery-preview-panel__image'})
+
     def getData(self):
-        return self.find_word[0].get_text(strip=True),self.price[0].get_text(strip=True)
+        return self.find_word[0].get_text(strip=True),self.price[0].get_text(strip=True),self.img[0]['src']
 
 
 class Ebay:
@@ -31,9 +36,11 @@ class Ebay:
         self.url = url
         self.web_data = None
         self.soup = None
+        self.soup2 = None
         self.find_word = None
         self.price = None
         self.register = None
+        self.img = None
         self.price_tag = ''
         self.real_price = ''
         self.requests()
@@ -44,11 +51,13 @@ class Ebay:
     
     def pull(self):
         self.soup = b4(self.web_data.text,'html.parser')
+        self.soup2 = b4(self.web_data.text,'lxml',parse_only=s4('img'))
         self.findtag()
 
     def findtag(self):
         self.find_word = self.soup.find_all('span',{'class','u-dspn'})
         self.price = self.soup.find_all('div',{'class':'mainPrice'})[0]
+        self.img = self.soup2.find_all('img',{'class':'img img300'})
         
     def getData(self):
         # print(find_word[0].get_text(strip=True))
@@ -57,7 +66,7 @@ class Ebay:
             self.price_tag += i
         self.price_tag = self.price_tag.split('\n')
         self.real_price = self.price_tag[8].replace('Approximately ','').replace('(including shipping)','')
-        return self.find_word[0].get_text(strip=True),self.real_price
+        return self.find_word[0].get_text(strip=True),self.real_price,self.img[0]['src']
 
 
 class Weloveshop:
@@ -65,8 +74,10 @@ class Weloveshop:
         self.url = url
         self.web_data = None
         self.soup = None
+        self.soup2 = None
         self.find_word = None
         self.price = None
+        self.img = None
         self.requests()
 
     def requests(self):
@@ -75,14 +86,16 @@ class Weloveshop:
     
     def pull(self):
         self.soup = b4(self.web_data.text,'html.parser')
+        self.soup2 = b4(self.web_data.text,'lxml',parse_only=s4('img'))
         self.findtag()
 
     def findtag(self):
         self.find_word = self.soup.find('h1')
         self.price = self.soup.find_all('strong',{'class':'font-34px color-main'})
+        self.img = self.soup2.find_all('img',{'class':'active'})
     
     def getData(self):
-        return self.find_word.get_text(strip=True),self.price[0].get_text(strip=True)+' บาท'
+        return self.find_word.get_text(strip=True),self.price[0].get_text(strip=True)+' บาท',self.img[0]['src']
 
 '''gt730 2GB'''
 url = "https://www.lazada.co.th/products/gt730-2gb-i3301291452-s12230721553.html?spm=a2o4m.searchlist.list.3.127aef4ewYv5U6&search=1"
@@ -96,7 +109,10 @@ url5 = "https://www.ebay.com/itm/185281932182?_trkparms=amclksrc%3DITM%26aid%3D1
 url6 = "https://www.ebay.com/itm/294018679165?_trkparms=pageci%3Aad6bee17-8e67-11ec-80fd-f6af9a1ce477%7Cparentrq%3Afdaf8fd217e0a744852fc889fffa2cba%7Ciid%3A1"
 
 url7 = "https://portal.weloveshopping.com/product/L90702790"
-l = Weloveshop(url7)
+url8 ="https://portal.weloveshopping.com/product/L90302979"
+
+
+l = Lazada(url)
 print(l.getData())
 
 
