@@ -43,12 +43,12 @@ def get_header_and_context(url):
     for i in context:
         #  print(i.get_text())
         text_context += i.get_text()
-    return [str(text_header),text_context]
+    return [str(text_header),text_context.replace(u'\xa0', u' ')]
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 browser = webdriver.Chrome(options=options, executable_path=r'C:\Users\Keroro\Desktop\Learn-Python\chromedriver')
-start_website = "https://www.compgamer.com/mainpage/author/viruss"
+start_website = "https://www.compgamer.com/mainpage/author/viruss/page/12"
 # browser.get(start_website)
 # time.sleep(3)
 # html = browser.page_source
@@ -72,7 +72,7 @@ while(True):
     # end +=1000 
     link = get_all_link_and_next_page(next_page)
     all_link += link[0]
-    if count == 5:
+    if count == 10:
         break
     before_page = next_page
     next_page = link[1]
@@ -95,10 +95,10 @@ len(all_text_link)
 for index,link in enumerate(all_text_link):
     text = get_header_and_context(link)
     print(text)
-    # filename = str(index+1)+'.txt'
+    filename = 'AkumaFaster'+str(index+110)+'.txt'
     # f = open('AkumaFaster'+filename, 'w')
-    # with open('AkumaFaster'+filename, 'w',encoding='utf-8') as f:
-    #     f.write(text[0])
-    #     f.write("\n\n")
-    #     f.write(text[1])
+    with open('AkumaFaster\\'+filename, 'w',encoding='utf-8') as f:
+        f.write(text[0])
+        f.write("\n\n")
+        f.write(text[1])
 browser.quit()
