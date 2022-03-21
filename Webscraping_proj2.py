@@ -48,7 +48,7 @@ def get_header_and_context(url):
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 browser = webdriver.Chrome(options=options, executable_path=r'C:\Users\Keroro\Desktop\Learn-Python\chromedriver')
-start_website = "https://www.compgamer.com/mainpage/author/viruss/page/12"
+start_website = "https://www.compgamer.com/mainpage/author/linkinboy/page/97"
 # browser.get(start_website)
 # time.sleep(3)
 # html = browser.page_source
@@ -72,7 +72,7 @@ while(True):
     # end +=1000 
     link = get_all_link_and_next_page(next_page)
     all_link += link[0]
-    if count == 10:
+    if count == 5:
         break
     before_page = next_page
     next_page = link[1]
@@ -95,9 +95,9 @@ len(all_text_link)
 for index,link in enumerate(all_text_link):
     text = get_header_and_context(link)
     print(text)
-    filename = 'AkumaFaster'+str(index+110)+'.txt'
+    filename = 'linkinboy'+str(index+973)+'.txt'
     # f = open('AkumaFaster'+filename, 'w')
-    with open('AkumaFaster\\'+filename, 'w',encoding='utf-8') as f:
+    with open('linkinboy\\'+filename, 'w',encoding='utf-8') as f:
         f.write(text[0])
         f.write("\n\n")
         f.write(text[1])
