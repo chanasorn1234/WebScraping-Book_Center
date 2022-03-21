@@ -29,17 +29,21 @@ def get_all_link_and_next_page(url):
     return [news_link,nextpage]
     #array 0 = [news_link]
     #array 1 = next_page
-# def get_header_and_context(url):
-#     so = web_scrap(url)
-#     data = so.find("div",{"class" : "td-pb-span8 td-main-content"}).find("div",{"class":"td-ss-main-content"}).find("article")
-#     head = data.find("div",{"class":"td-post-header"}).find("header",{"class":"td-post-title"}).find("h1",{"class":"entry-title"})
-#     context = data.find("div",{"class":"td-post-content"}).find("div",{"itemprop": "articleBody"})
-#     get_header = head.get_text()
-#     get_context = context.get_text()
-#     regexp = re.compile(r'\n', re.UNICODE)
-#     text_header = regexp.sub('', get_header)
-#     text_context = regexp.sub('', get_context)
-#     return [str(text_header),str(text_context)]
+def get_header_and_context(url):
+    so = web_scrap(url)
+    data = so.find("section",{"class" : "primary"}).find("article")
+    head = data.find("h1",{"class":"entry-title post-title"})
+    context = data.find("div",{"class":"entry clearfix"}).find_all("p")
+    get_header = head.get_text()
+    # get_context = context.get_text()
+    regexp = re.compile(r'\n', re.UNICODE)
+    text_header = regexp.sub('', get_header)
+    # text_context = regexp.sub('', get_context)
+    text_context = ""
+    for i in context:
+        #  print(i.get_text())
+        text_context += i.get_text()
+    return [str(text_header),text_context]
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
@@ -76,3 +80,25 @@ while(True):
     
     #time.sleep(random.uniform(10.0,1000.0)/1000)
 print(all_link)
+
+f = open("all_link.txt", 'w')
+with open("all_link.txt", 'w',encoding='utf-8') as f:
+    for link in all_link:
+        f.write(link+",")
+
+text_all_link = open("all_link.txt", "r")
+lines = text_all_link.read()
+all_text_link = lines.split(",")
+all_text_link.pop()
+len(all_text_link)
+
+for index,link in enumerate(all_text_link):
+    text = get_header_and_context(link)
+    print(text)
+    # filename = str(index+1)+'.txt'
+    # f = open('AkumaFaster'+filename, 'w')
+    # with open('AkumaFaster'+filename, 'w',encoding='utf-8') as f:
+    #     f.write(text[0])
+    #     f.write("\n\n")
+    #     f.write(text[1])
+browser.quit()
