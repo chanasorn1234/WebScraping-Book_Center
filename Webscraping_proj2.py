@@ -1,3 +1,4 @@
+from lib2to3.pytree import convert
 from bs4 import BeautifulSoup, Comment
 import requests
 import regex as re
@@ -5,6 +6,7 @@ import xml
 from selenium import webdriver
 import time
 import random
+from jason_algorithm import Tranformtojson
 
 random.seed(time.time())
 def web_scrap(url):
@@ -48,7 +50,7 @@ def get_header_and_context(url):
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 browser = webdriver.Chrome(options=options, executable_path=r'C:\Users\Keroro\Desktop\Learn-Python\chromedriver')
-start_website = "https://www.compgamer.com/mainpage/author/linkinboy/page/97"
+start_website = "https://www.compgamer.com/mainpage/author/cgnadmin/page/23"
 # browser.get(start_website)
 # time.sleep(3)
 # html = browser.page_source
@@ -72,7 +74,7 @@ while(True):
     # end +=1000 
     link = get_all_link_and_next_page(next_page)
     all_link += link[0]
-    if count == 5:
+    if count == 10:
         break
     before_page = next_page
     next_page = link[1]
@@ -95,10 +97,13 @@ len(all_text_link)
 for index,link in enumerate(all_text_link):
     text = get_header_and_context(link)
     print(text)
-    filename = 'linkinboy'+str(index+973)+'.txt'
-    # f = open('AkumaFaster'+filename, 'w')
-    with open('linkinboy\\'+filename, 'w',encoding='utf-8') as f:
-        f.write(text[0])
-        f.write("\n\n")
-        f.write(text[1])
+    convert = Tranformtojson(index+213,"Mr.O",text[0],text[1])
+    convert.tranform()
+    # filename = 'codeman'+str(index+762)+'.txt'
+    # # f = open('AkumaFaster'+filename, 'w')
+    # with open('codeman\\'+filename, 'w',encoding='utf-8') as f:
+    #     f.write(text[0])
+    #     f.write("\n\n")
+    #     f.write(text[1])
+    
 browser.quit()
